@@ -1,47 +1,74 @@
-import { useState } from 'react';
-import './App.css';
-
-type Quote = {
-  content: string;
-  author: string;
-};
+import { useEffect, useState } from "react";
+import "./App.css";
 
 function App() {
-  const [quote, setQuote] = useState<Quote | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [quote, setQuote] = useState<string>("");
+  const [author, setAuthor] = useState<string>("");
+  const [fade, setFade] = useState(false);
 
-  const fetchQuote = async () => {
-    setLoading(true);
-    setError(null);
+  async function getQuote() {
+    setFade(false);
+
     try {
       const res = await fetch("https://api.quotable.io/random");
-      if (!res.ok) throw new Error("Failed to fetch quote");
-      const data: Quote = await res.json();
-      setQuote(data);
-    } catch (err) {
-      console.error(err);
-      setError("Could not fetch quote. Please try again.");
-    } finally {
-      setLoading(false);
+      const data = await res.json();
+
+      setTimeout(() => {
+        setQuote(data.content);
+        setAuthor(data.author);
+        setFade(true);
+      }, 150);
+
+      changeBackground();
+    } catch {
+      setQuote("Could not fetch quote 😭");
+      setAuthor("");
     }
-  };
+  }
+
+  function changeBackground() {
+    const colors = [
+      "#000080",
+      "#2C2C54",
+      "#2C2C54",
+      "#4ECCA3",
+      "#3B3C98",
+      "#2D6E7E",
+      "#41436A",
+      "#C879FF",
+      "#4D9DE0",
+    ];
+    const random = colors[Math.floor(Math.random() * colors.length)];
+    document.body.style.background = random;
+  }
+
+  function copyQuote() {
+    navigator.clipboard.writeText(`"${quote}" — ${author}`);
+  }
+
+  function tweetQuote() {
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      `"${quote}" — ${author}`
+    )}`;
+    window.open(url, "_blank");
+  }
+
+  useEffect(() => {
+    getQuote();
+  }, []);
 
   return (
-    <div className="app-container">
-      <h1>Quote Generator</h1>
-      <button onClick={fetchQuote} disabled={loading}>
-        {loading ? "Loading..." : "Get Quote"}
-      </button>
+    <div className="container">
+      <p className="quote-text" style={{ opacity: fade ? 1 : 0 }}>
+        "{quote}"
+      </p>
+      <p className="quote-author">— {author}</p>
 
-      {error && <p className="error">{error}</p>}
-
-      {quote && (
-        <div className="quote-card">
-          <p className="quote">"{quote.content}"</p>
-          <p className="author">- {quote.author}</p>
-        </div>
-      )}
+      <div className="actions">
+        <button onClick={getQuote}>New Quote</button>
+        <button onClick={copyQuote}>Copy</button>
+        <button onClick={tweetQuote}>Tweet</button>
+      </div>
     </div>
   );
 }
