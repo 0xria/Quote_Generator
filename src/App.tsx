@@ -15,11 +15,9 @@ function App() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("https://api.allorigins.win/get?url=" + encodeURIComponent("https://api.quotable.io/random"));
-      console.log("Response status:", res.status);
-      const data: Quote = await res.json();
-      console.log("Fetched data:", data);
+      const res = await fetch("https://api.quotable.io/random");
       if (!res.ok) throw new Error("Failed to fetch quote");
+      const data: Quote = await res.json();
       setQuote(data);
     } catch (err) {
       console.error(err);
