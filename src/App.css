@@ -1,85 +1,39 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-* {
+html, body {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-  font-family: "Inter", sans-serif;
+  height: 100%;
 }
 
-body, #root {
+.app-wrapper {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: background 0.6s ease;
-  padding: 20px;
+  transition: background-color 0.6s ease;
 }
 
 .container {
-  background: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.2);
   padding: 2rem;
-  border-radius: 18px;
+  border-radius: 12px;
   text-align: center;
-  width: 90%;
-  max-width: 550px;
-  box-shadow: 0px 4px 20px rgba(0,0,0,0.1);
+  backdrop-filter: blur(10px);
 }
 
 .quote-text {
-  font-size: 1.5rem;
-  line-height: 1.4;
-  opacity: 0;
-  transition: opacity 0.6s ease;
+  font-size: 1.3rem;
+  transition: opacity 0.8s ease;
 }
 
 .quote-author {
-  margin-top: 12px;
-  font-size: 1rem;
-  font-weight: 600;
-  opacity: 0.7;
+  margin-top: 10px;
+  opacity: 0.8;
 }
 
-.actions {
-  margin-top: 1.5rem;
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-}
-
-button {
-  padding: 10px 15px;
-  border-radius: 8px;
+.actions button {
+  margin: 10px;
+  padding: 10px 20px;
   border: none;
+  border-radius: 6px;
   cursor: pointer;
-  font-weight: 600;
-  transition: 0.3s ease;
 }
-
-button:hover {
-  transform: translateY(-2px);
-  opacity: 0.9;
-}
-

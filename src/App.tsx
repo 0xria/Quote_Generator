@@ -4,9 +4,11 @@ import "./App.css";
 function App() {
   const [quote, setQuote] = useState({ content: "", author: "" });
   const [fade, setFade] = useState(false);
+  const [bg, setBg] = useState("#4D9DE0");
 
   async function getQuote() {
     setFade(false);
+
     try {
       const res = await fetch("https://api.quotable.io/random");
       const data = await res.json();
@@ -36,8 +38,9 @@ function App() {
       "#C879FF",
       "#4D9DE0",
     ];
-    document.body.style.background =
-      colors[Math.floor(Math.random() * colors.length)];
+
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    setBg(randomColor);
   }
 
   function copyQuote() {
@@ -56,18 +59,20 @@ function App() {
   }, []);
 
   return (
-    <div className="container">
-      <p className="quote-text" style={{ opacity: fade ? 1 : 0 }}>
-        "{quote.content}"
-      </p>
-      <p className="quote-author">— {quote.author}</p>
+    <div className="app-wrapper" style={{ backgroundColor: bg }}>
+      <div className="container">
+        <p className="quote-text" style={{ opacity: fade ? 1 : 0 }}>
+          "{quote.content}"
+        </p>
+        <p className="quote-author">— {quote.author}</p>
 
-      <div className="actions">
-        <button onClick={() => { getQuote(); changeBackground(); }}>
-          New Quote
-        </button>
-        <button onClick={copyQuote}>Copy</button>
-        <button onClick={tweetQuote}>Tweet</button>
+        <div className="actions">
+          <button onClick={() => { getQuote(); changeBackground(); }}>
+            New Quote
+          </button>
+          <button onClick={copyQuote}>Copy</button>
+          <button onClick={tweetQuote}>Tweet</button>
+        </div>
       </div>
     </div>
   );
