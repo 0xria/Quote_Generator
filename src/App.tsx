@@ -8,7 +8,7 @@ function App() {
   async function getQuote() {
     setFade(false);
     try {
-      const res = await fetch("https://api.quotable.io/random");
+      const res = await fetch("https://type.fit/api/quotes");
       const data = await res.json();
 
       setTimeout(() => {
