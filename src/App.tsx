@@ -11,10 +11,10 @@ function App() {
       const res = await fetch("https://api.quotable.io/random");
       const data = await res.json();
 
-      //setTimeout(() => {
-       // setQuote({ content: data.content, author: data.author });
-       // setFade(true);
-      //}, 150);
+      setTimeout(() => {
+        setQuote({ content: data.content, author: data.author });
+        setFade(true);
+      }, 1500);
 
     } catch {
       setQuote({
