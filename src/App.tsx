@@ -8,11 +8,14 @@ function App() {
   async function getQuote() {
     setFade(false);
     try {
-      const res = await fetch("https://type.fit/api/quotes");
+      const res = await fetch("https://api.quotable.io/random");
       const data = await res.json();
 
+      //Pick random quote from array
+      const random = data[Math.floor(Math.random() * data.length)];
+
       setTimeout(() => {
-        setQuote({ content: data.content, author: data.author });
+        setQuote({ content: random.text, author: random.author  || "Unknown"});
         setFade(true);
       }, 150);
 
