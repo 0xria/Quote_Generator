@@ -5,7 +5,7 @@ function App() {
   const [quote, setQuote] = useState({ content: "", author: "" });
   const [fade, setFade] = useState(false);
 
-  // Fallback quotes in case the API fails
+  // Only used if the API fails
   const fallbackQuotes = [
     { content: "Keep pushing, queen!", author: "Ria" },
     { content: "Small steps every day.", author: "Ria" },
@@ -19,21 +19,17 @@ function App() {
       const res = await fetch("https://type.fit/api/quotes");
       const data = await res.json();
 
-      // Make sure we have an array
-      const quoteArray = Array.isArray(data) ? data : fallbackQuotes;
-
-      // Pick a random quote
-      const random = quoteArray[Math.floor(Math.random() * quoteArray.length)];
-
-      // Some quotes have null authors
-      const author = random.author ? random.author : "Unknown";
+      // Pick a random quote from the API array
+      const random = data[Math.floor(Math.random() * data.length)];
+      const author = random.author || "Unknown";
 
       setTimeout(() => {
-        setQuote({ content: random.text || random.content || random.content, author });
+        setQuote({ content: random.text, author });
         setFade(true);
       }, 150);
+
     } catch (err) {
-      // If fetch fails, use fallback
+      // Use fallback only if API fails
       const random = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
       setQuote(random);
       setFade(true);
@@ -41,10 +37,7 @@ function App() {
   }
 
   function changeBackground() {
-    const colors = [
-      "#000080", "#2C2C54", "#4ECCA3", "#3B3C98",
-      "#2D6E7E", "#41436A", "#C879FF", "#4D9DE0",
-    ];
+    const colors = ["#000080","#2C2C54","#4ECCA3","#3B3C98","#2D6E7E","#41436A","#C879FF","#4D9DE0"];
     document.body.style.background = colors[Math.floor(Math.random() * colors.length)];
   }
 
@@ -69,9 +62,7 @@ function App() {
       <p className="quote-author">— {quote.author}</p>
 
       <div className="actions">
-        <button onClick={() => { getQuote(); changeBackground(); }}>
-          New Quote
-        </button>
+        <button onClick={() => { getQuote(); changeBackground(); }}>New Quote</button>
         <button onClick={copyQuote}>Copy</button>
         <button onClick={tweetQuote}>Tweet</button>
       </div>
