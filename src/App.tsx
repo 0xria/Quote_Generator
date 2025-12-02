@@ -1,76 +1,61 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
-function App() {
+export default function QuoteBox() {
   const [quote, setQuote] = useState({ content: "", author: "" });
-  const [fade, setFade] = useState(false);
+  const [error, setError] = useState("");
 
-  async function getQuote() {
-    setFade(false);
+  const fetchQuote = async () => {
     try {
-      const res = await fetch("https://api.quotable.io/random");
+      setError("");
+
+      const res = await fetch("https://type.fit/api/quotes"); // mobile-safe
+    
+      if (!res.ok) throw new Error("Failed to fetch");
+
       const data = await res.json();
 
-      setTimeout(() => {
-        setQuote({ content: data.content, author: data.author });
-        setFade(true);
-      }, 150);
+      // Random quote
+      const random = data[Math.floor(Math.random() * data.length)];
 
-    } catch {
       setQuote({
-        content: "Could not fetch quote 😭",
-        author: "",
+        content: random.text,
+        author: random.author || "Unknown",
       });
-      setFade(true);
+
+    } catch (err) {
+      console.error(err);
+      setError("Could not fetch quote 😭");
     }
-  }
-
-  function changeBackground() {
-    const colors = [
-      "#000080",
-      "#2C2C54",
-      "#4ECCA3",
-      "#3B3C98",
-      "#2D6E7E",
-      "#41436A",
-      "#C879FF",
-      "#4D9DE0",
-    ];
-    document.body.style.background =
-      colors[Math.floor(Math.random() * colors.length)];
-  }
-
-  function copyQuote() {
-    navigator.clipboard.writeText(`"${quote.content}" — ${quote.author}`);
-  }
-
-  function tweetQuote() {
-    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-      `"${quote.content}" — ${quote.author}`
-    )}`;
-    window.open(url, "_blank");
-  }
+  };
 
   useEffect(() => {
-    getQuote();
+    fetchQuote();
   }, []);
 
   return (
-    <div className="container">
-      <p className="quote-text" style={{ opacity: fade ? 1 : 0 }}>
-        "{quote.content}"
+    <div className="quote-box">
+      <p className="quote">
+        {error ? error : `"${quote.content}"`}
       </p>
-      <p className="quote-author">— {quote.author}</p>
 
-      <div className="actions">
-        <button onClick={() => { getQuote(); changeBackground(); }}>
-          New Quote
+      <p className="author">— {quote.author}</p>
+
+      <div className="buttons">
+        <button onClick={fetchQuote}>New Quote</button>
+        <button onClick={() => navigator.clipboard.writeText(quote.content)}>
+          Copy
         </button>
-        <button onClick={copyQuote}>Copy</button>
-        <button onClick={tweetQuote}>Tweet</button>
+        <button
+          onClick={() =>
+            window.open(
+              `https://twitter.com/intent/tweet?text="${quote.content}" — ${quote.author}`
+            )
+          }
+        >
+          Tweet
+        </button>
       </div>
     </div>
   );
 }
-
-export default App;
